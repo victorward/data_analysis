@@ -1,6 +1,7 @@
 import pandas
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import stats
 
 data = None
 
@@ -13,11 +14,15 @@ def read_data():
 
 
 def avg_day_birth():
+    # w_value, p_value = stats.shapiro(data['date'])
     grouped_by_wday = data.groupby('wday').sum()
     amount_of_data = data.groupby('wday').count()
     # print(grouped_by_wday['births'])
     # print(amount_of_data['date'])
     days_birth = grouped_by_wday['births']/amount_of_data['date']
+    tval, pval = stats.ttest_1samp(days_birth, 10000)
+    hipoteza_is_ok = pval > 0.05
+    print("Hipoteza is ok - {}. Pvalue = {}".format(hipoteza_is_ok, pval))
     print(days_birth)
     print("Average day birth - {}".format(np.mean(days_birth)))
     plot(days_birth)
