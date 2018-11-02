@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
 
-data = None
-
 
 def read_data():
     global data
