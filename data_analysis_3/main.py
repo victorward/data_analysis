@@ -105,6 +105,8 @@ def plot_linear_regression(model, x, y, dataset, name):
     plt.ylabel('Predicated horsepower')
     plt.title('Predicated horsepower for {}'.format(name))
     plt.show()
+    # sns.regplot(x="horsepower", y="engdispl", data=dataset)
+    # plt.show()
 
 
 def linear_regression(dataset, name):
@@ -157,15 +159,16 @@ def add_missing_data(dataset, percentage):
     return dataset
 
 
-def fill_data_with_regression_by_missed_data(dataset, percentage, ):
+def fill_data_with_regression_by_missed_data(dataset, percentage):
+    dataset_copy = dataset.copy()
     missed = add_missing_data(dataset, percentage)
     # get_missed_data_in_percents(missed)
-    print_comparision_information(missed['horsepower'], isDataset=False,
+    cleaned = clean_data(missed, row=True)
+    print_comparision_information(cleaned['horsepower'], isDataset=False,
                                   name='Linear Regression, missed ~{}% before'.format(percentage))
-    cleaned = clean_data(dataset, row=True)
     model, x, y = linear_regression(cleaned.copy(),
                                     'Linear Regression, missed ~{}%, before prediction'.format(percentage))
-    predicted = fill_with_regression(model, dataset.copy(), x)
+    predicted = fill_with_regression(model, dataset_copy, x)
     print_comparision_information(predicted['horsepower'], isDataset=False,
                                   name='Linear Regression, missed ~{}%, after prediction'.format(percentage))
     linear_regression(predicted.copy(), 'Linear Regression, missed ~{}%, after prediction'.format(percentage))
@@ -176,6 +179,7 @@ def start():
     cleaned = clean_data(data, row=True)
     get_missed_data_in_percents(cleaned, 'cleaned data')
     # show_plots(cleaned)
+    print_comparision_information(cleaned['horsepower'], isDataset=False, name='cleaned')
 
     # linear regression
     linear_regression(cleaned.copy(), 'cleaned data')
@@ -195,9 +199,9 @@ def start():
     linear_regression(predicted.copy(), 'after prediction')
 
     # hot-deck
-    # hot_deck = fill_with_hot_deck(data.copy(), cleaned.copy())
-    # print_comparision_information(hot_deck['horsepower'], isDataset=False, name='hot deck')
-    # linear_regression(hot_deck.copy(), 'after hot_deck')
+    hot_deck = fill_with_hot_deck(data.copy(), cleaned.copy())
+    print_comparision_information(hot_deck['horsepower'], isDataset=False, name='hot deck')
+    linear_regression(hot_deck.copy(), 'after hot_deck')
 
     # interpolation
     interpolation = fill_with_interpolation(data.copy())
